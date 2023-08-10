@@ -4,7 +4,7 @@
     {
         static void Main(string[] args)
         {
-            Exempel123();
+            Exempel124();
         }
 
         static void Exempel121() //Övning 12.1-12.2
@@ -91,6 +91,8 @@
 
         static void Exempel124() //Övning 12.4
         {
+            int[] temperature = new int[0];
+
             while (true)
             {
                 Console.WriteLine("Var god välj ett alternativ ur menyn: ");
@@ -100,16 +102,67 @@
                 Console.WriteLine("[A]vsluta");
 
                 string choice = Console.ReadLine();
-                int[] temperature;
+                
 
                 switch (choice.ToUpper())
                 {
                     case "L":
-                        Console.WriteLine("Var god fyll i din temperaturmätning: ");
-                        var list = new List<int>();
-                        list.Add(Convert.ToInt32(Console.ReadLine()));
-                        temperature = list.ToArray();
+                        Console.Write("Var god fyll i din temperaturmätning: ");
+                        int newTemperature = Convert.ToInt32(Console.ReadLine());
+
+                        int[] tempArray = new int[temperature.Length + 1]; //skapar ett nytt, temporärt fält till längden på temperature + 1 
+                        Array.Copy(temperature, tempArray, temperature.Length); //Kopierar in värdena som finns i temperature till tempArray
+                        tempArray[tempArray.Length - 1] = newTemperature; //sedan sätter vi den tomma platsen i tempArray till värdet användaren matade in 
+                        temperature = tempArray; //här sätter vi hela temperature till det som finns i tempArray 
+
                         break;
+
+                    case "S":
+                        
+                        if (temperature.Length == 0)
+                        {
+                            Console.WriteLine("Det finns inga värden än.");
+                            break;
+                        }
+              
+                        Console.WriteLine("Skriver ut temperaturer: ");
+
+                        int elementSum = 0;
+                        int iterations = 1;
+                        //skriver ut temperaturvärden
+                        foreach (int i in temperature) //eftersom jag inte vet hur stort fältet temperature är så tyckte jag en foreach loop passade bra 
+                        {
+                            Console.WriteLine($"Temperaturvärde nummer {iterations}: {i}");
+                            elementSum += i;
+                            iterations++;
+                        }
+                        //räknar ut medelvärdet 
+                        int meanTemperature = elementSum / temperature.Length;
+
+                        Console.WriteLine("Medeltemperaturen är: " + meanTemperature);
+
+                        break;
+
+                    case "T":
+
+                        if (temperature.Length == 0)
+                        {
+                            Console.WriteLine("Det finns inga värden än.");
+                            break;
+                        }
+
+                        //tar bort ett värde ur fältet genom att göra om det till en lista och sedan ta bort värdet innan man gör om det till ett fält igen 
+                        Console.Write("Välj vilken temperaturmätning du vill ta bort genom att ange dess index: ");
+                        int index = Convert.ToInt32(Console.ReadLine());
+                        var tempList = temperature.ToList();
+                        tempList.RemoveAt(index);
+                        temperature = tempList.ToArray();
+
+                        break;
+
+                    case "A":
+                        Console.WriteLine("Programmet avslutas, tack och hej!");
+                        return;
 
                     default:
                         Console.WriteLine("Felaktig input \n");
