@@ -2,10 +2,7 @@
 {
     internal class Program
     {
-        static void Main(string[] args)
-        {
-            Exempel124();
-        }
+        
 
         static void Exempel121() //Övning 12.1-12.2
         {
@@ -107,14 +104,24 @@
                 switch (choice.ToUpper())
                 {
                     case "L":
-                        Console.Write("Var god fyll i din temperaturmätning: ");
-                        int newTemperature = Convert.ToInt32(Console.ReadLine());
+                       
+                            try
+                            {
+                                Console.Write("Var god fyll i din temperaturmätning: ");
+                                int newTemperature = Convert.ToInt32(Console.ReadLine());
 
-                        int[] tempArray = new int[temperature.Length + 1]; //skapar ett nytt, temporärt fält till längden på temperature + 1 
-                        Array.Copy(temperature, tempArray, temperature.Length); //Kopierar in värdena som finns i temperature till tempArray
-                        tempArray[tempArray.Length - 1] = newTemperature; //sedan sätter vi den tomma platsen i tempArray till värdet användaren matade in 
-                        temperature = tempArray; //här sätter vi hela temperature till det som finns i tempArray 
+                                int[] tempArray = new int[temperature.Length + 1]; //skapar ett nytt, temporärt fält till längden på temperature + 1 
+                                Array.Copy(temperature, tempArray, temperature.Length); //Kopierar in värdena som finns i temperature till tempArray
+                                tempArray[tempArray.Length - 1] = newTemperature; //sedan sätter vi den tomma platsen i tempArray till värdet användaren matade in 
+                                temperature = tempArray; //här sätter vi hela temperature till det som finns i tempArray 
 
+                                break;
+                            }
+                            catch
+                            {
+                                Console.WriteLine("Du måste fylla i ett heltal med siffor\n");
+                            }
+                        
                         break;
 
                     case "S":
@@ -151,12 +158,21 @@
                             break;
                         }
 
-                        //tar bort ett värde ur fältet genom att göra om det till en lista och sedan ta bort värdet innan man gör om det till ett fält igen 
-                        Console.Write("Välj vilken temperaturmätning du vill ta bort genom att ange dess index: ");
-                        int index = Convert.ToInt32(Console.ReadLine());
-                        var tempList = temperature.ToList();
-                        tempList.RemoveAt(index);
-                        temperature = tempList.ToArray();
+                        try
+                        {
+                            //tar bort ett värde ur fältet genom att göra om det till en lista och sedan ta bort värdet innan man gör om det till ett fält igen 
+                            Console.Write("Välj vilken temperaturmätning du vill ta bort genom att ange dess index: ");
+                            int index = Convert.ToInt32(Console.ReadLine());
+                            var tempList = temperature.ToList();
+                            tempList.RemoveAt(index);
+                            temperature = tempList.ToArray();
+                        }
+                        catch
+                        {
+                            Console.WriteLine("Ditt val av index måste finnas");
+                        }
+                        
+                       
 
                         break;
 
@@ -169,6 +185,99 @@
                         break;
                 }
             }
+        }
+
+        static void Exempel125() //Övning 12.5
+        {
+            //intierar det två dimensionella fältet playingfield
+            string[,] playingField = new string[4, 4] { { "  ", "  ", "  ", "  " }, 
+                                                        { "  ", "  ", "  ", "  " },
+                                                        { "  ", "  ", "  ", "  " }, 
+                                                        { "  ", "  ", "  ", "  " } 
+                                                      }; 
+
+            var random = new Random(); //skapar en instans av klassen random 
+
+            int yCord = random.Next(0, 3); //sätter yCord till ett random värde mellan 0 och 3 
+            int xCord = random.Next(0, 3);
+
+            playingField[yCord, xCord] = "1"; //sätter ut en etta där målet i spelet befinner sig 
+
+            //Skriver ut spelplanen 
+            Console.WriteLine(" |1|2|3|4|"); 
+            Console.WriteLine("1|");
+            Console.WriteLine("2|");
+            Console.WriteLine("3|");
+            Console.WriteLine("4|");
+
+            //intierar variabler
+            int amountShots = 0; //För att hålla koll på antal skott använda 
+            int x = 0; //inmatad x 
+            int y = 0; //inmatad y
+
+            while (true) //Går tills spelaren träffar målet 
+            {
+                try //Felhantering 
+                {
+                    //Tar in användar värden 
+                    Console.WriteLine("\nPlease pick x and y coordinates for where you want to shoot: ");
+                    Console.Write("x: ");
+                    x = (Convert.ToInt32(Console.ReadLine()) - 1);
+                    Console.Write("y: ");
+                    y = (Convert.ToInt32(Console.ReadLine()) - 1);
+
+                    if (playingField[xCord, yCord] != playingField[x, y]) //Kollar om användaren prickat målet 
+                    {
+                        amountShots++; //räknar upp antal skott 
+                        Console.WriteLine("Du träffade målet! ");
+                        Console.WriteLine($"Du tog {amountShots} skott på dig");
+                        return;
+                    }
+                    else 
+                    {
+                        amountShots++; 
+                        Console.WriteLine("Du missade målet! Försök igen\n");
+                        playingField[x, y] = "* "; //Sätter det missade skottet till * 
+
+                        //loopar som skriver ut hur spelplanen ser ut efter varje missat skott 
+
+                        Console.WriteLine(" |1|2|3|4|");
+
+                        for (int i = 0; i < 4; i++)
+                        {
+                            Console.Write($"{i + 1}|");
+
+                            for (int j = 0; j < 4; j++)
+                            {
+                                if (playingField[i, j] == "1") //if satsen gör så att vi inte skriver ut och visar vart målet är någonstans
+                                {
+
+                                }
+                                else
+                                {
+                                    Console.Write(playingField[i, j]);
+                                }
+
+                            }
+
+                            Console.WriteLine();
+
+                        }
+                    }
+                }
+                catch //Om användaren inte matar in ett giltigt tal 
+                {
+                    Console.WriteLine("Your input has to be a whole number 1-4");
+                    continue;
+                }   
+            }  
+        }
+
+        static void Main(string[] args)
+        {
+            Exempel125();
+
+            
         }
     }
 }
